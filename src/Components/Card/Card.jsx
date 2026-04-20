@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Modal from "../Modal/Modal";
+import { addToCartAsync } from "../../features/Cart/cartSlice";
 
 const UserCard = ({ user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openAddCartModal, setOpenAddCartModal] = useState(false);
+  const [openFavModal, setOpenFavModal] = useState(false);
   const menuRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -16,12 +20,24 @@ const UserCard = ({ user }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const addToCart = () => {
+    dispatch(addToCartAsync(user));
+    setOpenAddCartModal(false);
+  };
+  const addToFavourite = () => {
+    console.log("Product added to Favourite");
+  };
+
   const handleOpenAddCartModal = () => {
     setOpenAddCartModal(true);
+  };
+  const handleOpenFavModal = () => {
+    setOpenFavModal(true);
   };
 
   const onClose = () => {
     setOpenAddCartModal(false);
+    setOpenFavModal(false);
   };
 
   return (
@@ -66,7 +82,10 @@ const UserCard = ({ user }) => {
               >
                 Add to cart
               </button>
-              <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <button
+                onClick={handleOpenFavModal}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
                 Favourite
               </button>
               <button className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">
@@ -113,7 +132,16 @@ const UserCard = ({ user }) => {
 
       {openAddCartModal && (
         <div>
-          <Modal onClose={onClose} />
+          <Modal onClose={onClose} title="Add to cart" addToCart={addToCart} />
+        </div>
+      )}
+      {openFavModal && (
+        <div>
+          <Modal
+            onClose={onClose}
+            title="Add to Favourites"
+            addToFavourite={addToFavourite}
+          />
         </div>
       )}
     </div>

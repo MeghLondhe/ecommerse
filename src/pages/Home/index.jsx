@@ -2,14 +2,21 @@ import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../features/products/producstSlice";
 import UserCard from "../../Components/Card/Card";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items, loading, error } = useSelector((state) => state.products);
+  const { items: cartItem } = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
+  const openCart = () => {
+    navigate("/cart");
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -36,9 +43,11 @@ const Home = () => {
             </svg>
           </button>
           <button
+            onClick={openCart}
             className="p-2 rounded-full hover:bg-indigo-50 text-gray-400 hover:text-indigo-500 transition-colors"
             title="Cart"
           >
+            <p>{cartItem.length}</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-6 h-6"
